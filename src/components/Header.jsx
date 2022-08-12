@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, AppBar, IconButton, Toolbar, TextField, useTheme, Button } from '@mui/material';
-import { Menu as MenuIcon, Search as SearchIcon } from '@mui/icons-material';
+import { Menu as MenuIcon, Search as SearchIcon, Home as HomeIcon } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import { SearchContext } from '../utils/searchContext';
 
 export const Header = () => {
+  const { setSearchValue } = useContext(SearchContext);
   const { palette } = useTheme();
 
   return (
@@ -30,6 +32,16 @@ export const Header = () => {
           }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <IconButton color="inherit" aria-label="menu">
+              <Link to="/" style={{ textDecoration: 'none' }}>
+                <HomeIcon
+                  sx={{
+                    color: palette.AssistanceColor.main,
+                    fontSize: 35,
+                  }}
+                />
+              </Link>
+            </IconButton>
+            <IconButton color="inherit" aria-label="menu">
               <MenuIcon
                 sx={{
                   display: { mobile: 'block', tablet: 'none' },
@@ -48,6 +60,7 @@ export const Header = () => {
               sx={{
                 display: { mobile: 'none', tablet: 'block' },
               }}
+              onChange={(e) => setSearchValue(e.target.value)}
             />
           </Box>
         </Box>

@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { Container, Box, CssBaseline } from '@mui/material';
 import {
   // pages
@@ -10,10 +10,12 @@ import {
   // components
   Header,
   Sidebar,
+  PageWrapper,
 } from './utils/exporter';
+import { useInAuthPage } from './utils/inAuthPage';
 
 function App() {
-  const location = useLocation();
+  const inAuthPage = useInAuthPage();
 
   return (
     <Container maxWidth={false} disableGutters={true} sx={{ height: '100vh' }}>
@@ -21,14 +23,9 @@ function App() {
       <Box
         sx={{
           display: 'flex',
-          height: 'fit-content',
         }}>
-        {location.pathname !== '/login' && location.pathname !== '/register' && <Sidebar />}
-        <Box
-          sx={{
-            width: { mobile: '100%', tablet: '80%' },
-            height: '88vh',
-          }}>
+        {!inAuthPage && <Sidebar />}
+        <PageWrapper>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/favoritetodos" element={<FavoriteTodosPage />} />
@@ -36,7 +33,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
           </Routes>
-        </Box>
+        </PageWrapper>
       </Box>
       <CssBaseline />
     </Container>

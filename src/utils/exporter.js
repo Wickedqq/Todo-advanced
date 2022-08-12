@@ -8,9 +8,10 @@ import { Sidebar } from '../components/Sidebar';
 import { AddTodo } from '../components/AddTodo-btn';
 import { AddTodoSheet } from '../components/AddTodo-sheet';
 import { Todo } from '../components/Todo';
+import { PageWrapper } from '../components/PageWrapper';
 
 // page exports
 export { HomePage, LoginPage, RegisterPage, FavoriteTodosPage, DeletedTodosPage };
 
 // components exports
-export { Header, Sidebar, AddTodoSheet, AddTodo, Todo };
+export { Header, Sidebar, AddTodoSheet, AddTodo, Todo, PageWrapper };

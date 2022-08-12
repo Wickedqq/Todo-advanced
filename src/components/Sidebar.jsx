@@ -14,7 +14,7 @@ import { AddTodo, AddTodoSheet } from '../utils/exporter';
 export const Sidebar = () => {
   const [addTodoIsOpen, setAddTodoIsOpen] = useState(false);
   const { palette } = useTheme();
-  const { mode, setMode } = useContext(ThemeContext);
+  const { mode, saveCurrentMode } = useContext(ThemeContext);
 
   const addTodoOpener = (bool) => {
     setAddTodoIsOpen(bool);
@@ -67,7 +67,7 @@ export const Sidebar = () => {
         </Link>
       </Stack>
       <IconButton
-        onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}
+        onClick={() => saveCurrentMode(mode === 'light' ? 'dark' : 'light')}
         sx={{ position: 'absolute', bottom: 10, left: 10 }}>
         {mode === 'light' ? (
           <Brightness4Icon fontSize="large" />

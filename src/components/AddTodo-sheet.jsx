@@ -13,9 +13,11 @@ import {
   StarOutlined as StarOutlinedIcon,
   StarBorderOutlined as StarBorderOutlinedIcon,
   DoneOutlined as DoneOutlinedIcon,
+  Close as CloseIcon,
 } from '@mui/icons-material';
+import { nanoid } from 'nanoid';
 
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { addTodo } from '../redux/slices/todoSlice';
 
@@ -25,6 +27,8 @@ export const AddTodoSheet = ({ addTodoOpener }) => {
     important: false,
     favorite: false,
   });
+  const [isValid, setIsValid] = useState(true);
+
   const dispatch = useDispatch();
   const { mode } = useContext(ThemeContext);
   const { palette } = useTheme();
@@ -39,9 +43,32 @@ export const AddTodoSheet = ({ addTodoOpener }) => {
   };
 
   const addTodoFunction = () => {
-    dispatch(addTodo(todoData));
-    addTodoOpener(false);
+    if (todoData.task.length > 0) {
+      setIsValid(true);
+      dispatch(
+        addTodo({
+          ...todoData,
+          id: nanoid(),
+        }),
+      );
+      addTodoOpener(false);
+    }
+    setIsValid(false);
   };
+
+  useEffect(() => {
+    const onEnterFunction = (event) => {
+      if (event.code === 'NumpadEnter' || event.code === 'Enter') {
+        addTodoFunction();
+      }
+    };
+
+    document.addEventListener('keypress', onEnterFunction);
+
+    return () => {
+      document.removeEventListener('keypress', onEnterFunction);
+    };
+  }, [todoData]);
 
   return (
     <Container
@@ -75,7 +102,7 @@ export const AddTodoSheet = ({ addTodoOpener }) => {
       />
       <Box
         sx={{
-          gridColumn: '1 / 6',
+          gridColumn: '1 / -1',
           gridRow: '4/5',
           display: 'flex',
           width: 'fit-content',
@@ -92,7 +119,7 @@ export const AddTodoSheet = ({ addTodoOpener }) => {
       </Box>
       <Box
         sx={{
-          gridColumn: '1 / 6',
+          gridColumn: '1 / -1',
           gridRow: '5/6',
           display: 'flex',
           width: 'fit-content',
@@ -112,20 +139,38 @@ export const AddTodoSheet = ({ addTodoOpener }) => {
         </IconButton>
         <Typography variant="h6">Is favorite</Typography>
       </Box>
+      {!isValid && (
+        <Typography
+          sx={{
+            gridColumn: '1 / -1',
+            gridRow: '7/8',
+            color: palette.error.main,
+            fontSize: { mobile: '16px', wideTablet: '22px' },
+          }}>
+          Task should have at least 1 character
+        </Typography>
+      )}
       <Button
         onClick={addTodoFunction}
         sx={{
-          gridColumn: '1 / 3',
+          width: '150px',
+          gridColumn: '1 / -1',
           gridRow: '10/-1',
           backgroundColor: palette.secondary.main,
           color: palette.AssistanceColor.main,
           marginBottom: '5px',
           alignSelf: 'center',
+          justifySelf: 'start',
         }}
         startIcon={<DoneOutlinedIcon />}
         variant="outline">
         Add
       </Button>
+      <IconButton
+        onClick={() => addTodoOpener(false)}
+        sx={{ gridColumn: '10 / -1', gridRow: '1/2', justifySelf: 'end' }}>
+        <CloseIcon />
+      </IconButton>
     </Container>
   );
 };
