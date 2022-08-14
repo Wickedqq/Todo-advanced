@@ -1,12 +1,34 @@
-import React, { useContext } from 'react';
-import { Box, AppBar, IconButton, Toolbar, TextField, useTheme, Button } from '@mui/material';
+import React, { useContext, useRef } from 'react';
+import {
+  Box,
+  AppBar,
+  IconButton,
+  Toolbar,
+  TextField,
+  useTheme,
+  Button,
+  Typography,
+} from '@mui/material';
 import { Menu as MenuIcon, Search as SearchIcon, Home as HomeIcon } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
-import { SearchContext } from '../utils/searchContext';
+import { SearchContext } from '../utils/contexts/searchContext';
+import { useAuth } from '../utils/contexts/authContext';
 
 export const Header = () => {
+  const { authUser, logout } = useAuth();
   const { setSearchValue } = useContext(SearchContext);
+  const searchRef = useRef(null);
   const { palette } = useTheme();
+
+  const userLogout = async () => {
+    try {
+      if (window.confirm('Are you sure that you want to logout?')) {
+        await logout();
+      }
+    } catch (err) {
+      alert(err);
+    }
+  };
 
   return (
     <AppBar
@@ -50,13 +72,15 @@ export const Header = () => {
                 }}
               />
             </IconButton>
-            <IconButton color="inherit">
+            <IconButton onClick={() => searchRef.current.focus()} color="inherit">
               <SearchIcon sx={{ color: palette.AssistanceColor.main, fontSize: 30 }} />
             </IconButton>
             <TextField
               placeholder="Search your todo"
               variant="standard"
               color="secondary"
+              type="text"
+              inputRef={searchRef}
               sx={{
                 display: { mobile: 'none', tablet: 'block' },
               }}
@@ -69,27 +93,48 @@ export const Header = () => {
             display: 'flex',
             gap: 1,
             fontSize: '25px',
+            alignItems: 'center',
           }}>
-          <Link to="/login" style={{ textDecoration: 'none' }}>
+          {authUser && (
+            <Typography variant="h5" sx={{ color: palette.AssistanceColor.main }}>
+              {authUser.displayName}
+            </Typography>
+          )}
+          {authUser && (
             <Button
+              onClick={userLogout}
               size="large"
               sx={{
                 fontSize: '20px',
                 color: palette.AssistanceColor.main,
               }}>
-              Login
+              Logout
             </Button>
-          </Link>
-          <Link to="/register" style={{ textDecoration: 'none' }}>
-            <Button
-              size="large"
-              sx={{
-                fontSize: '20px',
-                color: palette.AssistanceColor.main,
-              }}>
-              Register
-            </Button>
-          </Link>
+          )}
+          {!authUser && (
+            <>
+              <Link to="/login" style={{ textDecoration: 'none' }}>
+                <Button
+                  size="large"
+                  sx={{
+                    fontSize: '20px',
+                    color: palette.AssistanceColor.main,
+                  }}>
+                  Login
+                </Button>
+              </Link>
+              <Link to="/register" style={{ textDecoration: 'none' }}>
+                <Button
+                  size="large"
+                  sx={{
+                    fontSize: '20px',
+                    color: palette.AssistanceColor.main,
+                  }}>
+                  Register
+                </Button>
+              </Link>
+            </>
+          )}
         </Box>
       </Toolbar>
     </AppBar>

@@ -3,7 +3,7 @@ import { Button, Typography, useTheme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Todo } from '../utils/exporter';
-import { SearchContext } from '../utils/searchContext';
+import { SearchContext } from '../utils/contexts/searchContext';
 import { deleteAll } from '../redux/slices/todoSlice';
 
 export const DeletedTodosPage = () => {

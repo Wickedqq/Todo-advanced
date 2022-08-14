@@ -8,7 +8,7 @@ import {
   Delete as DeleteIcon,
   Home as HomeIcon,
 } from '@mui/icons-material';
-import { ThemeContext } from '../utils/modeContext';
+import { ThemeContext } from '../utils/contexts/modeContext';
 import { AddTodo, AddTodoSheet } from '../utils/exporter';
 
 export const Sidebar = () => {

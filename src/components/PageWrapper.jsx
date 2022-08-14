@@ -6,14 +6,12 @@ export const PageWrapper = (props) => {
   const inAuthPage = useInAuthPage();
 
   const AuthPageWrapper = styled('div')(({ theme }) => ({
-    minWidth: 'fit-content',
     width: '300px',
     height: '400px',
     padding: '20px',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(10, 1fr)',
+    gridTemplateRows: 'repeat(10, 1fr)',
     gridColumn: '1/-1',
     gridRow: '1/-1',
     alignSelf: 'center',

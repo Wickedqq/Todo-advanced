@@ -3,7 +3,7 @@ import { Typography, useTheme } from '@mui/material';
 import { useSelector } from 'react-redux';
 
 import { Todo } from '../utils/exporter';
-import { SearchContext } from '../utils/searchContext';
+import { SearchContext } from '../utils/contexts/searchContext';
 
 export const HomePage = () => {
   const { todos } = useSelector((state) => state.todoReducer);

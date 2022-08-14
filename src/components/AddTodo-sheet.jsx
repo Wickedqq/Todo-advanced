@@ -1,4 +1,4 @@
-import { ThemeContext } from '../utils/modeContext';
+import { ThemeContext } from '../utils/contexts/modeContext';
 import {
   Box,
   Button,
