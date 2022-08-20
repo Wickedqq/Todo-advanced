@@ -13,13 +13,13 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
     <ThemeContextProvider>
-      <SearchProvider>
-        <AuthProvider>
+      <AuthProvider>
+        <SearchProvider>
           <Provider store={store}>
             <App />
           </Provider>
-        </AuthProvider>
-      </SearchProvider>
+        </SearchProvider>
+      </AuthProvider>
     </ThemeContextProvider>
   </BrowserRouter>,
 );

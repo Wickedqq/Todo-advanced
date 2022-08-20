@@ -6,6 +6,9 @@ import {
   onAuthStateChanged,
   signOut,
   updateProfile,
+  sendEmailVerification,
+  updateEmail,
+  updatePassword,
 } from 'firebase/auth';
 import { app } from '../../firebase';
 
@@ -17,11 +20,13 @@ export const useAuth = () => {
 
 export const AuthProvider = (props) => {
   const [authUser, setAuthUser] = useState(null);
+  const [isReadyToRender, setIsReadyToRender] = useState(false);
   const auth = getAuth(app);
 
   useEffect(() => {
     const unsubscriberResponce = onAuthStateChanged(auth, (user) => {
       setAuthUser(user);
+      setIsReadyToRender(true);
     });
 
     return unsubscriberResponce;
@@ -29,11 +34,6 @@ export const AuthProvider = (props) => {
 
   const signup = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
-  };
-  const setUserName = (name) => {
-    return updateProfile(auth.currentUser, {
-      displayName: name,
-    });
   };
 
   const login = (email, password) => {
@@ -44,9 +44,40 @@ export const AuthProvider = (props) => {
     signOut(auth);
   };
 
+  const setUserName = (name) => {
+    return updateProfile(auth.currentUser, {
+      displayName: name,
+    });
+  };
+  const setAvatar = (img) => {
+    return updateProfile(auth.currentUser, {
+      photoURL: img,
+    });
+  };
+  const verifyEmail = () => {
+    return sendEmailVerification(auth.currentUser);
+  };
+  const resetEmail = (email) => {
+    return updateEmail(auth.currentUser, email);
+  };
+  const resetPassword = (password) => {
+    return updatePassword(auth.currentUser, password);
+  };
+
   return (
-    <AuthContext.Provider value={{ authUser, signup, setUserName, login, logout }}>
-      {props.children}
+    <AuthContext.Provider
+      value={{
+        authUser,
+        signup,
+        setUserName,
+        setAvatar,
+        login,
+        logout,
+        verifyEmail,
+        resetEmail,
+        resetPassword,
+      }}>
+      {isReadyToRender && props.children}
     </AuthContext.Provider>
   );
 };

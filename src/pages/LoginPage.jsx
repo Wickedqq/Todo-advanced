@@ -1,5 +1,5 @@
 import { Box, Button, TextField } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { validate } from '../utils/authValidate';
 import { useAuth } from '../utils/contexts/authContext';
@@ -11,8 +11,13 @@ export const LoginPage = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { login } = useAuth();
+  const { authUser, login } = useAuth();
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    authUser && navigate('/');
+  }, [authUser, navigate]);
 
   const loginDataGetter = (e) => {
     const { name, value } = e.target;
@@ -34,8 +39,7 @@ export const LoginPage = () => {
     try {
       setError(null);
       setIsLoading(true);
-      let resp = await login(email, password);
-      console.log(resp);
+      await login(email, password);
       navigate('/');
     } catch (err) {
       window.alert('email or pasword is incorrect ');

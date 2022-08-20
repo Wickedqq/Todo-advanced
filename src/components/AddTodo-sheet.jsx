@@ -20,6 +20,8 @@ import { nanoid } from 'nanoid';
 import React, { useContext, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { addTodo } from '../redux/slices/todoSlice';
+import { useAuth } from '../utils/contexts/authContext';
+import { addTodos } from '../redux/asyncActions';
 
 export const AddTodoSheet = ({ addTodoOpener }) => {
   const [todoData, setTodoData] = useState({
@@ -28,6 +30,7 @@ export const AddTodoSheet = ({ addTodoOpener }) => {
     favorite: false,
   });
   const [isValid, setIsValid] = useState(true);
+  const { authUser } = useAuth();
 
   const dispatch = useDispatch();
   const { mode } = useContext(ThemeContext);
@@ -43,17 +46,29 @@ export const AddTodoSheet = ({ addTodoOpener }) => {
   };
 
   const addTodoFunction = () => {
-    if (todoData.task.length > 0) {
-      setIsValid(true);
+    if (authUser) {
       dispatch(
-        addTodo({
-          ...todoData,
-          id: nanoid(),
+        addTodos({
+          uid: authUser.uid,
+          todoData: {
+            ...todoData,
+            id: nanoid(),
+          },
         }),
       );
-      addTodoOpener(false);
+    } else {
+      if (todoData.task.length > 0) {
+        setIsValid(true);
+        dispatch(
+          addTodo({
+            ...todoData,
+            id: nanoid(),
+          }),
+        );
+      }
+      setIsValid(false);
     }
-    setIsValid(false);
+    addTodoOpener(false);
   };
 
   useEffect(() => {

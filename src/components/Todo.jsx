@@ -1,28 +1,95 @@
-import { Box, Container, IconButton, useTheme } from '@mui/material';
+import { Box, Container, IconButton, TextField, Typography, useTheme } from '@mui/material';
 import {
   StarOutlined as StarOutlinedIcon,
   StarBorderOutlined as StarBorderOutlinedIcon,
   LabelImportantOutlined as LabelImportantOutlinedIcon,
   LabelImportantTwoTone as LabelImportantTwoToneIcon,
   Delete as DeleteIcon,
+  Edit as EditIcon,
+  Restore as RestoreIcon,
 } from '@mui/icons-material';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { deleteTodo, setIsFavoriteTodo, setIsimportantTodo } from '../redux/slices/todoSlice';
+import { deleteTodo, editTodo, restoreTodo } from '../redux/slices/todoSlice';
 import { useLocation } from 'react-router-dom';
+import { useAuth } from '../utils/contexts/authContext';
+import { deleteTodos, editTodos } from '../redux/asyncActions';
 
-export const Todo = ({ id, task, important, favorite }) => {
+export const Todo = ({ id, docId, task, important, favorite }) => {
+  const [openEdit, setOpenEdit] = useState(false);
+  const [taskValue, setTaskValue] = useState(task);
+  const [favoriteValue, setFavoriteValue] = useState(favorite);
+  const [importantValue, setImportantValue] = useState(important);
   const { palette } = useTheme();
   const dispatch = useDispatch();
   const location = useLocation();
+
+  const { authUser } = useAuth();
+
+  const switchFavorite = () => {
+    setFavoriteValue((value) => !value);
+    const editedTask = {
+      id,
+      docId,
+      task: taskValue,
+      important: importantValue,
+      favorite: !favoriteValue,
+    };
+    if (authUser) {
+      dispatch(editTodos({ todoData: { ...editedTask }, uid: authUser.uid, docId }));
+    }
+    dispatch(editTodo(editedTask));
+  };
+
+  const switchImportant = () => {
+    setImportantValue((value) => !value);
+    const editedTask = {
+      id,
+      docId,
+      task: taskValue,
+      important: !importantValue,
+      favorite: favoriteValue,
+    };
+    if (authUser) {
+      dispatch(editTodos({ todoData: { ...editedTask }, uid: authUser.uid, docId }));
+    }
+    dispatch(editTodo(editedTask));
+  };
+
+  const editTodoFunction = (e) => {
+    setOpenEdit((value) => !value);
+    const editedTask = {
+      id,
+      docId,
+      task: taskValue,
+      important: importantValue,
+      favorite: favoriteValue,
+    };
+    if (task !== taskValue) {
+      if (authUser) {
+        dispatch(editTodos({ todoData: { ...editedTask }, uid: authUser.uid, docId }));
+      }
+      dispatch(editTodo(editedTask));
+    }
+  };
 
   const deleteTodoFunction = () => {
     if (
       location.pathname === '/deletedtodos' &&
       window.confirm('are you sure than you want to completely delete this todo?')
     ) {
-      dispatch(deleteTodo(id));
+      if (authUser) {
+        dispatch(
+          deleteTodos({
+            uid: authUser.uid,
+            deleteDocIds: [docId],
+            amount: 1,
+          }),
+        );
+      } else {
+        dispatch(deleteTodo(id));
+      }
     }
     if (location.pathname !== '/deletedtodos') {
       dispatch(deleteTodo(id));
@@ -35,27 +102,52 @@ export const Todo = ({ id, task, important, favorite }) => {
         maxHeight: '200px',
         display: 'grid',
         gridTemplate: 'repeat(10, 1fr) / repeat(10, 1fr)',
+        boxShadow: '0px 0px 15px 3px rgba(0,0,0,0.53)',
       }}>
-      <Box sx={{ gridColumn: '1/8', gridRow: '1/-1', overflowY: 'auto' }}>{task}</Box>
+      <Box sx={{ gridColumn: '1/8', gridRow: '1/-1', overflowY: 'auto' }}>
+        {openEdit ? (
+          <TextField
+            variant="outlined"
+            value={taskValue}
+            onChange={(e) => setTaskValue(e.target.value)}
+          />
+        ) : (
+          taskValue
+        )}
+      </Box>
       <Box sx={{ gridColumn: '8/-1', gridRow: '1/3', justifySelf: 'end' }}>
-        <IconButton onClick={() => dispatch(setIsFavoriteTodo(id))}>
-          {favorite ? <StarOutlinedIcon color="primary" /> : <StarBorderOutlinedIcon />}
+        <IconButton onClick={switchFavorite}>
+          {favoriteValue ? <StarOutlinedIcon color="primary" /> : <StarBorderOutlinedIcon />}
         </IconButton>
       </Box>
       <Box sx={{ gridColumn: '8/-1', gridRow: '3/5', justifySelf: 'end' }}>
-        <IconButton onClick={() => dispatch(setIsimportantTodo(id))}>
-          {important ? (
+        <IconButton onClick={switchImportant}>
+          {importantValue ? (
             <LabelImportantOutlinedIcon sx={{ color: palette.error.main }} />
           ) : (
             <LabelImportantTwoToneIcon />
           )}
         </IconButton>
       </Box>
-      <Box sx={{ gridColumn: '8/-1', gridRow: '8/-1', alignSelf: 'end', justifySelf: 'end' }}>
-        <IconButton onClick={deleteTodoFunction}>
+      <Box sx={{ display: 'grid', gridColumn: '8/-1', gridRow: '7/-2' }}>
+        <IconButton sx={{ alignSelf: 'start', justifySelf: 'end' }} onClick={editTodoFunction}>
+          <EditIcon />
+        </IconButton>
+        <IconButton sx={{ alignSelf: 'start', justifySelf: 'end' }} onClick={deleteTodoFunction}>
           <DeleteIcon />
         </IconButton>
       </Box>
+      {location.pathname === '/deletedtodos' && (
+        <IconButton
+          sx={{ width: 'fit-content', gridColumn: '1/8', gridRow: '9/-1', alignSelf: 'start' }}
+          onClick={() => dispatch(restoreTodo(id))}>
+          <RestoreIcon />
+          <br />
+          <Typography element="span" sx={{ marginLeft: '5px' }}>
+            restore todo
+          </Typography>
+        </IconButton>
+      )}
     </Container>
   );
 };

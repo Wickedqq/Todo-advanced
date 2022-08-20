@@ -13,16 +13,20 @@ import { Menu as MenuIcon, Search as SearchIcon, Home as HomeIcon } from '@mui/i
 import { Link } from 'react-router-dom';
 import { SearchContext } from '../utils/contexts/searchContext';
 import { useAuth } from '../utils/contexts/authContext';
+import { clearAllTodos } from '../redux/slices/todoSlice';
+import { useDispatch } from 'react-redux';
 
 export const Header = () => {
   const { authUser, logout } = useAuth();
   const { setSearchValue } = useContext(SearchContext);
   const searchRef = useRef(null);
   const { palette } = useTheme();
+  const dispatch = useDispatch();
 
   const userLogout = async () => {
     try {
       if (window.confirm('Are you sure that you want to logout?')) {
+        dispatch(clearAllTodos());
         await logout();
       }
     } catch (err) {
@@ -96,9 +100,11 @@ export const Header = () => {
             alignItems: 'center',
           }}>
           {authUser && (
-            <Typography variant="h5" sx={{ color: palette.AssistanceColor.main }}>
-              {authUser.displayName}
-            </Typography>
+            <Link to="/me" style={{ textDecoration: 'none' }}>
+              <Typography variant="h5" sx={{ color: palette.AssistanceColor.main }}>
+                {authUser.displayName}
+              </Typography>
+            </Link>
           )}
           {authUser && (
             <Button

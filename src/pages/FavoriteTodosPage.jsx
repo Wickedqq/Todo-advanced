@@ -19,6 +19,7 @@ export const FavoriteTodosPage = () => {
               <Todo
                 key={i * (Math.random() * 100)}
                 id={item.id}
+                docId={item.docId}
                 task={item.task}
                 important={item.important}
                 favorite={item.favorite}

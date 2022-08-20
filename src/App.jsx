@@ -7,15 +7,26 @@ import {
   RegisterPage,
   FavoriteTodosPage,
   DeletedTodosPage,
+  UserPage,
   // components
   Header,
   Sidebar,
   PageWrapper,
 } from './utils/exporter';
-import { useInAuthPage } from './utils/inAuthPage';
+import { useInSpecificPage } from './utils/inSpecificPage';
+import { useDispatch } from 'react-redux';
+import { useAuth } from './utils/contexts/authContext';
+import { getTodos } from './redux/asyncActions';
+import { useEffect } from 'react';
 
 function App() {
-  const inAuthPage = useInAuthPage();
+  const { authUser } = useAuth();
+  const { inAuthPage, inUserPage } = useInSpecificPage();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    authUser && dispatch(getTodos(authUser.uid));
+  }, [authUser]);
 
   return (
     <Container maxWidth={false} disableGutters={true} sx={{ height: '100vh' }}>
@@ -24,7 +35,7 @@ function App() {
         sx={{
           display: 'flex',
         }}>
-        {!inAuthPage && <Sidebar />}
+        {!inAuthPage && !inUserPage && <Sidebar />}
         <PageWrapper>
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -32,6 +43,7 @@ function App() {
             <Route path="/deletedtodos" element={<DeletedTodosPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/me" element={<UserPage />} />
           </Routes>
         </PageWrapper>
       </Box>

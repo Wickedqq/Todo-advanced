@@ -1,9 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { getTodos, addTodos, deleteTodos } from '../asyncActions';
+
 const initialState = {
   todos: [],
   favoriteTodos: [],
   deletedTodos: [],
+  loading: false,
 };
 
 const todoSlice = createSlice({
@@ -16,22 +19,14 @@ const todoSlice = createSlice({
         ? [...state.favoriteTodos, action.payload]
         : [...state.favoriteTodos];
     },
-    setIsFavoriteTodo: (state, action) => {
+    editTodo: (state, action) => {
       state.todos = state.todos.map((item) => {
-        if (item.id === action.payload) {
-          return { ...item, favorite: !item.favorite };
+        if (action.payload.id === item.id) {
+          return action.payload;
         }
         return item;
       });
       state.favoriteTodos = state.todos.filter((item) => item.favorite === true);
-    },
-    setIsimportantTodo: (state, action) => {
-      state.todos = state.todos.map((item) => {
-        if (item.id === action.payload) {
-          return { ...item, important: !item.important };
-        }
-        return item;
-      });
     },
     deleteTodo: (state, action) => {
       const deletedValue = state.deletedTodos.find((item) => item.id === action.payload);
@@ -47,8 +42,43 @@ const todoSlice = createSlice({
       state.todos = state.todos.filter((item) => item.id !== action.payload);
       state.favoriteTodos = state.favoriteTodos.filter((item) => item.id !== action.payload);
     },
+    restoreTodo: (state, action) => {
+      const restoredTodo = state.deletedTodos.filter((item) => item.id === action.payload);
+      state.todos = [...state.todos, ...restoredTodo];
+      state.deletedTodos = state.deletedTodos.filter((item) => item.id !== action.payload);
+    },
     deleteAll: (state) => {
       state.deletedTodos = [];
+    },
+    clearAllTodos: (state) => {
+      state.todos = [];
+      state.favoriteTodos = [];
+      state.deletedTodos = [];
+    },
+  },
+  extraReducers: {
+    [getTodos.pending]: (state) => {
+      state.loading = true;
+    },
+    [getTodos.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.todos = action.payload;
+      state.favoriteTodos = action.payload.filter((item) => item.favorite === true);
+    },
+    [getTodos.rejected]: (state) => {
+      state.loading = false;
+    },
+    [addTodos.fulfilled]: (state, action) => {
+      state.todos = [...state.todos, action.payload];
+    },
+    [deleteTodos.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.deletedTodos = state.deletedTodos.filter(
+        (item) => !action.payload.find((docId) => docId === item.docId),
+      );
+    },
+    [deleteTodos.rejected]: (state) => {
+      state.loading = false;
     },
   },
 });
@@ -56,5 +86,5 @@ const todoSlice = createSlice({
 const todoReducer = todoSlice.reducer;
 export { todoReducer };
 
-export const { addTodo, setIsFavoriteTodo, setIsimportantTodo, deleteTodo, deleteAll } =
+export const { addTodo, editTodo, deleteTodo, restoreTodo, deleteAll, clearAllTodos } =
   todoSlice.actions;

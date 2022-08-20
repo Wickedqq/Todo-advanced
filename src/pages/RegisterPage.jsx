@@ -1,5 +1,5 @@
 import { Box, Button, TextField } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { validate } from '../utils/authValidate';
 import { useAuth } from '../utils/contexts/authContext';
@@ -12,8 +12,12 @@ export const RegisterPage = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { signup, setUserName } = useAuth();
+  const { signup, setUserName, authUser } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    authUser && navigate('/');
+  }, [authUser, navigate]);
 
   const registerDataGetter = (e) => {
     const { name, value } = e.target;

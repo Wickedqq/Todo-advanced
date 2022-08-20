@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Todo } from '../utils/exporter';
 import { SearchContext } from '../utils/contexts/searchContext';
 import { deleteAll } from '../redux/slices/todoSlice';
+import { deleteTodos } from '../redux/asyncActions';
+import { useAuth } from '../utils/contexts/authContext';
 
 export const DeletedTodosPage = () => {
   const { deletedTodos } = useSelector((state) => state.todoReducer);
@@ -12,9 +14,21 @@ export const DeletedTodosPage = () => {
   const { searchValue } = useContext(SearchContext);
   const dispatch = useDispatch();
 
+  const { authUser } = useAuth();
+
   const removeDeletedTodos = () => {
     if (window.confirm('are you sure you want to remove all deleted todos?')) {
-      dispatch(deleteAll());
+      if (authUser) {
+        dispatch(
+          deleteTodos({
+            uid: authUser.uid,
+            deleteDocIds: deletedTodos.map((item) => `${item.docId}`),
+            amount: deletedTodos.length,
+          }),
+        );
+      } else {
+        dispatch(deleteAll());
+      }
     }
   };
 
@@ -27,6 +41,7 @@ export const DeletedTodosPage = () => {
               <Todo
                 key={i * (Math.random() * 100)}
                 id={item.id}
+                docId={item.docId}
                 task={item.task}
                 important={item.important}
                 favorite={item.favorite}

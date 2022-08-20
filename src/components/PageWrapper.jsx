@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box, styled } from '@mui/material';
-import { useInAuthPage } from '../utils/inAuthPage';
+import { useInSpecificPage } from '../utils/inSpecificPage';
 
 export const PageWrapper = (props) => {
-  const inAuthPage = useInAuthPage();
+  const { inAuthPage, inUserPage } = useInSpecificPage();
 
   const AuthPageWrapper = styled('div')(({ theme }) => ({
     width: '300px',
@@ -16,7 +16,6 @@ export const PageWrapper = (props) => {
     gridRow: '1/-1',
     alignSelf: 'center',
     justifySelf: 'center',
-    backgroundColor: [theme.palette.mode === 'light' ? 'white' : 'black'],
     borderRadius: '5px',
     boxShadow: [
       theme.palette.mode === 'light'
@@ -25,10 +24,20 @@ export const PageWrapper = (props) => {
     ],
   }));
 
+  const UserPageWrapper = styled('div')(() => ({
+    display: 'grid',
+    gridTemplateColumns: 'repeat(10, 1fr)',
+    gridTemplateRows: 'repeat(10, 1fr)',
+    height: '88vh',
+    width: '100%',
+    gridColumn: '1/-1',
+    gridRow: '1/-1',
+  }));
+
   return (
     <Box
       sx={{
-        width: { mobile: '100%', tablet: inAuthPage ? '100%' : '80%' },
+        width: { mobile: '100%', tablet: inAuthPage || inUserPage ? '100%' : '80%' },
         height: '88vh',
         display: 'grid',
         position: 'relative',
@@ -38,10 +47,12 @@ export const PageWrapper = (props) => {
           wideTablet: inAuthPage ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)',
           laptop: 'repeat(3, 1fr)',
         },
+        overflowY: 'auto',
         gap: 2,
       }}>
-      {!inAuthPage && props.children}
+      {!inAuthPage && !inUserPage && props.children}
       {inAuthPage && <AuthPageWrapper>{props.children}</AuthPageWrapper>}
+      {inUserPage && <UserPageWrapper>{props.children}</UserPageWrapper>}
     </Box>
   );
 };
