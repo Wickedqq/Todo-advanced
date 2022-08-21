@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Typography, useTheme } from '@mui/material';
 import { useSelector } from 'react-redux';
 
 import { Todo } from '../utils/exporter';
 import { SearchContext } from '../utils/contexts/searchContext';
+import { useEffect } from 'react';
 
 export const HomePage = () => {
   const { todos } = useSelector((state) => state.todoReducer);
@@ -23,6 +24,7 @@ export const HomePage = () => {
                 task={item.task}
                 important={item.important}
                 favorite={item.favorite}
+                isDeleted={item.isDeleted}
               />
             )
           );

@@ -45,6 +45,7 @@ export const DeletedTodosPage = () => {
                 task={item.task}
                 important={item.important}
                 favorite={item.favorite}
+                isDeleted={item.isDeleted}
               />
             )
           );

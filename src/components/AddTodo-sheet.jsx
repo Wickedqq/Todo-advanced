@@ -52,22 +52,23 @@ export const AddTodoSheet = ({ addTodoOpener }) => {
           uid: authUser.uid,
           todoData: {
             ...todoData,
+            isDeleted: false,
             id: nanoid(),
           },
         }),
       );
-    } else {
-      if (todoData.task.length > 0) {
-        setIsValid(true);
-        dispatch(
-          addTodo({
-            ...todoData,
-            id: nanoid(),
-          }),
-        );
-      }
-      setIsValid(false);
     }
+    if (todoData.task.length > 0) {
+      setIsValid(true);
+      dispatch(
+        addTodo({
+          ...todoData,
+          id: nanoid(),
+        }),
+      );
+    }
+    setIsValid(false);
+
     addTodoOpener(false);
   };
 

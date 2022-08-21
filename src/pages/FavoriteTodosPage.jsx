@@ -23,6 +23,7 @@ export const FavoriteTodosPage = () => {
                 task={item.task}
                 important={item.important}
                 favorite={item.favorite}
+                isDeleted={item.isDeleted}
               />
             )
           );

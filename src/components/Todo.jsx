@@ -12,18 +12,16 @@ import {
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { deleteTodo, editTodo, restoreTodo } from '../redux/slices/todoSlice';
-import { useLocation } from 'react-router-dom';
 import { useAuth } from '../utils/contexts/authContext';
 import { deleteTodos, editTodos } from '../redux/asyncActions';
 
-export const Todo = ({ id, docId, task, important, favorite }) => {
+export const Todo = ({ id, docId, task, important, favorite, isDeleted }) => {
   const [openEdit, setOpenEdit] = useState(false);
   const [taskValue, setTaskValue] = useState(task);
   const [favoriteValue, setFavoriteValue] = useState(favorite);
   const [importantValue, setImportantValue] = useState(important);
   const { palette } = useTheme();
   const dispatch = useDispatch();
-  const location = useLocation();
 
   const { authUser } = useAuth();
 
@@ -35,6 +33,7 @@ export const Todo = ({ id, docId, task, important, favorite }) => {
       task: taskValue,
       important: importantValue,
       favorite: !favoriteValue,
+      isDeleted: isDeleted,
     };
     if (authUser) {
       dispatch(editTodos({ todoData: { ...editedTask }, uid: authUser.uid, docId }));
@@ -50,6 +49,7 @@ export const Todo = ({ id, docId, task, important, favorite }) => {
       task: taskValue,
       important: !importantValue,
       favorite: favoriteValue,
+      isDeleted: isDeleted,
     };
     if (authUser) {
       dispatch(editTodos({ todoData: { ...editedTask }, uid: authUser.uid, docId }));
@@ -65,6 +65,7 @@ export const Todo = ({ id, docId, task, important, favorite }) => {
       task: taskValue,
       important: importantValue,
       favorite: favoriteValue,
+      isDeleted: isDeleted,
     };
     if (task !== taskValue) {
       if (authUser) {
@@ -75,10 +76,7 @@ export const Todo = ({ id, docId, task, important, favorite }) => {
   };
 
   const deleteTodoFunction = () => {
-    if (
-      location.pathname === '/deletedtodos' &&
-      window.confirm('are you sure than you want to completely delete this todo?')
-    ) {
+    if (isDeleted && window.confirm('are you sure than you want to completely delete this todo?')) {
       if (authUser) {
         dispatch(
           deleteTodos({
@@ -91,9 +89,36 @@ export const Todo = ({ id, docId, task, important, favorite }) => {
         dispatch(deleteTodo(id));
       }
     }
-    if (location.pathname !== '/deletedtodos') {
+    if (!isDeleted) {
+      if (authUser) {
+        const editedTask = {
+          id,
+          docId,
+          task: taskValue,
+          important: importantValue,
+          favorite: favoriteValue,
+          isDeleted: true,
+        };
+        dispatch(editTodos({ todoData: { ...editedTask }, uid: authUser.uid, docId }));
+      } else {
+      }
       dispatch(deleteTodo(id));
     }
+  };
+
+  const restoreTodoFunction = () => {
+    if (authUser) {
+      const editedTask = {
+        id,
+        docId,
+        task: taskValue,
+        important: importantValue,
+        favorite: favoriteValue,
+        isDeleted: false,
+      };
+      dispatch(editTodos({ todoData: { ...editedTask }, uid: authUser.uid, docId }));
+    }
+    dispatch(restoreTodo(id));
   };
 
   return (
@@ -137,10 +162,10 @@ export const Todo = ({ id, docId, task, important, favorite }) => {
           <DeleteIcon />
         </IconButton>
       </Box>
-      {location.pathname === '/deletedtodos' && (
+      {isDeleted && (
         <IconButton
           sx={{ width: 'fit-content', gridColumn: '1/8', gridRow: '9/-1', alignSelf: 'start' }}
-          onClick={() => dispatch(restoreTodo(id))}>
+          onClick={restoreTodoFunction}>
           <RestoreIcon />
           <br />
           <Typography element="span" sx={{ marginLeft: '5px' }}>

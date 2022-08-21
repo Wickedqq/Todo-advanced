@@ -26,7 +26,8 @@ const todoSlice = createSlice({
         }
         return item;
       });
-      state.favoriteTodos = state.todos.filter((item) => item.favorite === true);
+
+      state.favoriteTodos = state.todos.filter((item) => item.favorite);
     },
     deleteTodo: (state, action) => {
       const deletedValue = state.deletedTodos.find((item) => item.id === action.payload);
@@ -36,15 +37,23 @@ const todoSlice = createSlice({
 
       state.deletedTodos = [
         ...state.deletedTodos,
-        ...state.todos.filter((item) => item.id === action.payload),
+        ...state.todos
+          .filter((item) => item.id === action.payload)
+          .map((item) => ({ ...item, isDeleted: true })),
       ];
 
       state.todos = state.todos.filter((item) => item.id !== action.payload);
       state.favoriteTodos = state.favoriteTodos.filter((item) => item.id !== action.payload);
     },
     restoreTodo: (state, action) => {
-      const restoredTodo = state.deletedTodos.filter((item) => item.id === action.payload);
+      const restoredTodo = state.deletedTodos
+        .filter((item) => item.id === action.payload)
+        .map((item) => ({ ...item, isDeleted: false }));
       state.todos = [...state.todos, ...restoredTodo];
+
+      state.favoriteTodos = restoredTodo[0].favorite
+        ? [...state.favoriteTodos, ...restoredTodo]
+        : [...state.favoriteTodos];
       state.deletedTodos = state.deletedTodos.filter((item) => item.id !== action.payload);
     },
     deleteAll: (state) => {
@@ -62,8 +71,10 @@ const todoSlice = createSlice({
     },
     [getTodos.fulfilled]: (state, action) => {
       state.loading = false;
-      state.todos = action.payload;
-      state.favoriteTodos = action.payload.filter((item) => item.favorite === true);
+      const sortedTodos = action.payload.sort((a, b) => Number(b.important) - Number(a.important));
+      state.todos = sortedTodos.filter((item) => item.isDeleted !== true);
+      state.favoriteTodos = sortedTodos.filter((item) => !item.isDeleted && item.favorite);
+      state.deletedTodos = sortedTodos.filter((item) => item.isDeleted);
     },
     [getTodos.rejected]: (state) => {
       state.loading = false;
