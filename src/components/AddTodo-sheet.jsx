@@ -57,15 +57,16 @@ export const AddTodoSheet = ({ addTodoOpener }) => {
           },
         }),
       );
-    }
-    if (todoData.task.length > 0) {
-      setIsValid(true);
-      dispatch(
-        addTodo({
-          ...todoData,
-          id: nanoid(),
-        }),
-      );
+    } else {
+      if (todoData.task.length > 0) {
+        setIsValid(true);
+        dispatch(
+          addTodo({
+            ...todoData,
+            id: nanoid(),
+          }),
+        );
+      }
     }
     setIsValid(false);
 

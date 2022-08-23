@@ -7,6 +7,7 @@ import {
   Typography,
   Box,
   Alert,
+  ClickAwayListener,
 } from '@mui/material';
 import React, { useState } from 'react';
 import { useAuth } from '../utils/contexts/authContext';
@@ -46,25 +47,27 @@ export const EmailUpdateComponent = ({ setEditEmail }) => {
   };
 
   return (
-    <Card sx={{ width: 300, marginTop: '20px', borderRadius: '10px' }}>
-      <CardContent>
-        <TextField
-          sx={{ marginBottom: '10px' }}
-          variant="outlined"
-          value={newEmail}
-          onChange={(e) => setNewEmail(e.target.value)}
-        />
-        {emailIsChanged && (
-          <Box>Your email is changed to verify your new email check your inbox</Box>
-        )}
-        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-      </CardContent>
-      <CardActions>
-        <Button onClick={updateEmail} variant="outlined">
-          Submit new email
-        </Button>
-      </CardActions>
-      {loading && <Typography>submiting...</Typography>}
-    </Card>
+    <ClickAwayListener onClickAway={() => setEditEmail(false)}>
+      <Card sx={{ width: 300, marginTop: '20px', borderRadius: '10px' }}>
+        <CardContent>
+          <TextField
+            sx={{ marginBottom: '10px' }}
+            variant="outlined"
+            value={newEmail}
+            onChange={(e) => setNewEmail(e.target.value)}
+          />
+          {emailIsChanged && (
+            <Box>Your email is changed to verify your new email check your inbox</Box>
+          )}
+          {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+        </CardContent>
+        <CardActions>
+          <Button onClick={updateEmail} variant="outlined">
+            Submit new email
+          </Button>
+        </CardActions>
+        {loading && <Typography>submiting...</Typography>}
+      </Card>
+    </ClickAwayListener>
   );
 };

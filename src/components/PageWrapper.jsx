@@ -47,8 +47,9 @@ export const PageWrapper = (props) => {
           wideTablet: inAuthPage ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)',
           laptop: 'repeat(3, 1fr)',
         },
+        gridAutoRows: '220px',
         overflowY: 'auto',
-        gap: 2,
+        gap: 3,
       }}>
       {!inAuthPage && !inUserPage && props.children}
       {inAuthPage && <AuthPageWrapper>{props.children}</AuthPageWrapper>}

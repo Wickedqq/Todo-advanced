@@ -1,4 +1,13 @@
-import { Button, Card, CardActions, CardContent, TextField, Box, Alert } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  TextField,
+  Box,
+  Alert,
+  ClickAwayListener,
+} from '@mui/material';
 import React, { useState } from 'react';
 import { useAuth } from '../utils/contexts/authContext';
 import { validate } from '../utils/authValidate';
@@ -33,23 +42,25 @@ export const PasswordUpdateComponent = ({ setEditPassword }) => {
   };
 
   return (
-    <Card sx={{ width: 300, marginTop: '20px', borderRadius: '10px' }}>
-      <CardContent>
-        <TextField
-          sx={{ marginBottom: '10px' }}
-          variant="outlined"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-        />
+    <ClickAwayListener onClickAway={() => setEditPassword(false)}>
+      <Card sx={{ width: 300, marginTop: '20px', borderRadius: '10px' }}>
+        <CardContent>
+          <TextField
+            sx={{ marginBottom: '10px' }}
+            variant="outlined"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
 
-        {passwordIsChanged && <Box>Your Password has been changed</Box>}
-        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-      </CardContent>
-      <CardActions>
-        <Button onClick={updatePassword} variant="outlined">
-          Submit new Password
-        </Button>
-      </CardActions>
-    </Card>
+          {passwordIsChanged && <Box>Your Password has been changed</Box>}
+          {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+        </CardContent>
+        <CardActions>
+          <Button onClick={updatePassword} variant="outlined">
+            Submit new Password
+          </Button>
+        </CardActions>
+      </Card>
+    </ClickAwayListener>
   );
 };

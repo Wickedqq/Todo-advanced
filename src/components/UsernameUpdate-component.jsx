@@ -1,4 +1,13 @@
-import { Button, Card, CardActions, CardContent, TextField, Box, Alert } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  TextField,
+  Box,
+  Alert,
+  ClickAwayListener,
+} from '@mui/material';
 import React, { useState } from 'react';
 import { useAuth } from '../utils/contexts/authContext';
 import { validate } from '../utils/authValidate';
@@ -29,22 +38,24 @@ export const UsernameUpdateComponent = ({ setEditUsername }) => {
   };
 
   return (
-    <Card sx={{ width: 300, marginTop: '20px', borderRadius: '10px' }}>
-      <CardContent>
-        <TextField
-          sx={{ marginBottom: '10px' }}
-          variant="outlined"
-          value={newUsername}
-          onChange={(e) => setNewUsername(e.target.value)}
-        />
-        {usernameIsChanged && <Box>Your username has been changed</Box>}
-        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-      </CardContent>
-      <CardActions>
-        <Button onClick={updateUsername} variant="outlined">
-          Submit new username
-        </Button>
-      </CardActions>
-    </Card>
+    <ClickAwayListener onClickAway={() => setEditUsername(false)}>
+      <Card sx={{ width: 300, marginTop: '20px', borderRadius: '10px' }}>
+        <CardContent>
+          <TextField
+            sx={{ marginBottom: '10px' }}
+            variant="outlined"
+            value={newUsername}
+            onChange={(e) => setNewUsername(e.target.value)}
+          />
+          {usernameIsChanged && <Box>Your username has been changed</Box>}
+          {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+        </CardContent>
+        <CardActions>
+          <Button onClick={updateUsername} variant="outlined">
+            Submit new username
+          </Button>
+        </CardActions>
+      </Card>
+    </ClickAwayListener>
   );
 };

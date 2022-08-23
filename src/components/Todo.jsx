@@ -129,9 +129,11 @@ export const Todo = ({ id, docId, task, important, favorite, isDeleted }) => {
         gridTemplate: 'repeat(10, 1fr) / repeat(10, 1fr)',
         boxShadow: '0px 0px 15px 3px rgba(0,0,0,0.53)',
       }}>
-      <Box sx={{ gridColumn: '1/8', gridRow: '1/-1', overflowY: 'auto' }}>
+      <Box sx={{ gridColumn: '1/10', gridRow: '1/-1', overflowY: 'auto' }}>
         {openEdit ? (
           <TextField
+            fullWidth
+            multiline={openEdit}
             variant="outlined"
             value={taskValue}
             onChange={(e) => setTaskValue(e.target.value)}
@@ -140,12 +142,12 @@ export const Todo = ({ id, docId, task, important, favorite, isDeleted }) => {
           taskValue
         )}
       </Box>
-      <Box sx={{ gridColumn: '8/-1', gridRow: '1/3', justifySelf: 'end' }}>
+      <Box sx={{ gridColumn: '10/-1', gridRow: '1/3', justifySelf: 'end' }}>
         <IconButton onClick={switchFavorite}>
           {favoriteValue ? <StarOutlinedIcon color="primary" /> : <StarBorderOutlinedIcon />}
         </IconButton>
       </Box>
-      <Box sx={{ gridColumn: '8/-1', gridRow: '3/5', justifySelf: 'end' }}>
+      <Box sx={{ gridColumn: '10/-1', gridRow: '3/5', justifySelf: 'end' }}>
         <IconButton onClick={switchImportant}>
           {importantValue ? (
             <LabelImportantOutlinedIcon sx={{ color: palette.error.main }} />
@@ -154,7 +156,7 @@ export const Todo = ({ id, docId, task, important, favorite, isDeleted }) => {
           )}
         </IconButton>
       </Box>
-      <Box sx={{ display: 'grid', gridColumn: '8/-1', gridRow: '7/-2' }}>
+      <Box sx={{ display: 'grid', gridColumn: '10/-1', gridRow: '7/-2' }}>
         <IconButton sx={{ alignSelf: 'start', justifySelf: 'end' }} onClick={editTodoFunction}>
           <EditIcon />
         </IconButton>
@@ -164,7 +166,7 @@ export const Todo = ({ id, docId, task, important, favorite, isDeleted }) => {
       </Box>
       {isDeleted && (
         <IconButton
-          sx={{ width: 'fit-content', gridColumn: '1/8', gridRow: '9/-1', alignSelf: 'start' }}
+          sx={{ width: 'fit-content', gridColumn: '10/-1', gridRow: '9/-1', alignSelf: 'start' }}
           onClick={restoreTodoFunction}>
           <RestoreIcon />
           <br />

@@ -26,9 +26,11 @@ export const changeTheme = (mode) => ({
       ...(mode === 'light'
         ? {
             main: '#338f73',
+            dark: '#2c7c64',
           }
         : {
             main: '#60c6a6',
+            dark: '#30866b',
           }),
     },
     error: {

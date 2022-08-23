@@ -10,6 +10,7 @@ import { Sidebar } from '../components/Sidebar';
 import { AddTodo } from '../components/AddTodo-btn';
 import { AddTodoSheet } from '../components/AddTodo-sheet';
 import { Todo } from '../components/Todo';
+import { TodoSmall } from '../components/TodoSmall';
 import { PageWrapper } from '../components/PageWrapper';
 import { UsernameUpdateComponent } from '../components/UsernameUpdate-component';
 import { EmailUpdateComponent } from '../components/EmailUpdate-component';
@@ -26,6 +27,7 @@ export {
   AddTodoSheet,
   AddTodo,
   Todo,
+  TodoSmall,
   PageWrapper,
   EmailUpdateComponent,
   UsernameUpdateComponent,
