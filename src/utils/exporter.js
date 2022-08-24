@@ -16,6 +16,8 @@ import { UsernameUpdateComponent } from '../components/UsernameUpdate-component'
 import { EmailUpdateComponent } from '../components/EmailUpdate-component';
 import { PasswordUpdateComponent } from '../components/PasswordUpdate-component';
 import { UserSidebar } from '../components/UserSidebar';
+import { UserShowDown } from '../components/UserShowDown';
+import { SearchShowDown } from '../components/SearchShowDown';
 
 // page exports
 export { HomePage, LoginPage, RegisterPage, FavoriteTodosPage, DeletedTodosPage, UserPage };
@@ -33,4 +35,6 @@ export {
   UsernameUpdateComponent,
   PasswordUpdateComponent,
   UserSidebar,
+  UserShowDown,
+  SearchShowDown,
 };

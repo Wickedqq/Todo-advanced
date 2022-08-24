@@ -75,7 +75,8 @@ export const UserSidebar = ({ authUser }) => {
   return (
     <Box
       sx={{
-        display: 'grid',
+        minWidth: '300px',
+        display: { mobile: 'none', tablet: 'grid' },
         gridTemplateRows: 'repeat(10, 1fr)',
         gridRow: '1/-1',
         gridColumn: '1/3',

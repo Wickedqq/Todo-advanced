@@ -129,7 +129,7 @@ export const Todo = ({ id, docId, task, important, favorite, isDeleted }) => {
         gridTemplate: 'repeat(10, 1fr) / repeat(10, 1fr)',
         boxShadow: '0px 0px 15px 3px rgba(0,0,0,0.53)',
       }}>
-      <Box sx={{ gridColumn: '1/10', gridRow: '1/-1', overflowY: 'auto' }}>
+      <Box sx={{ gridColumn: '1/10', gridRow: '1/-3', overflowY: 'auto' }}>
         {openEdit ? (
           <TextField
             fullWidth
@@ -166,7 +166,7 @@ export const Todo = ({ id, docId, task, important, favorite, isDeleted }) => {
       </Box>
       {isDeleted && (
         <IconButton
-          sx={{ width: 'fit-content', gridColumn: '10/-1', gridRow: '9/-1', alignSelf: 'start' }}
+          sx={{ gridColumn: '1/-2', gridRow: '9/-1', alignSelf: 'start', justifySelf: 'start' }}
           onClick={restoreTodoFunction}>
           <RestoreIcon />
           <br />

@@ -5,7 +5,7 @@ import { useInSpecificPage } from '../utils/inSpecificPage';
 export const PageWrapper = (props) => {
   const { inAuthPage, inUserPage } = useInSpecificPage();
 
-  const AuthPageWrapper = styled('div')(({ theme }) => ({
+  const AuthPageWrapper = styled(Box)(({ theme }) => ({
     width: '300px',
     height: '400px',
     padding: '20px',
@@ -24,7 +24,7 @@ export const PageWrapper = (props) => {
     ],
   }));
 
-  const UserPageWrapper = styled('div')(() => ({
+  const UserPageWrapper = styled(Box)(() => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(10, 1fr)',
     gridTemplateRows: 'repeat(10, 1fr)',
@@ -47,7 +47,7 @@ export const PageWrapper = (props) => {
           wideTablet: inAuthPage ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)',
           laptop: 'repeat(3, 1fr)',
         },
-        gridAutoRows: '220px',
+        gridAutoRows: inAuthPage ? 'none' : '220px',
         overflowY: 'auto',
         gap: 3,
       }}>

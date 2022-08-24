@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Button, IconButton, Stack, Typography, useTheme } from '@mui/material';
+import { Button, IconButton, Stack, Typography, useTheme } from '@mui/material';
 import {
   Brightness4Outlined as Brightness4OutlinedIcon,
   Brightness4 as Brightness4Icon,
@@ -10,61 +10,71 @@ import {
 } from '@mui/icons-material';
 import { ThemeContext } from '../utils/contexts/modeContext';
 import { AddTodo, AddTodoSheet } from '../utils/exporter';
+import { useInSpecificPage } from '../utils/inSpecificPage';
 
-export const Sidebar = () => {
+export const Sidebar = ({ setOpenBurger }) => {
   const [addTodoIsOpen, setAddTodoIsOpen] = useState(false);
   const { palette } = useTheme();
   const { mode, saveCurrentMode } = useContext(ThemeContext);
+  const { currentPage } = useInSpecificPage();
+  const navigation = [
+    {
+      name: 'Home',
+      icon: (
+        <HomeIcon fontSize="large" sx={{ color: currentPage === '/' && palette.primary.main }} />
+      ),
+    },
+    {
+      name: 'Favorite',
+      icon: (
+        <StarIcon
+          fontSize="large"
+          sx={{ color: currentPage === '/favoritetodos' && palette.primary.main }}
+        />
+      ),
+    },
+    {
+      name: 'Deleted',
+      icon: (
+        <DeleteIcon
+          fontSize="large"
+          sx={{ color: currentPage === '/deletedtodos' && palette.primary.main }}
+        />
+      ),
+    },
+  ];
 
   const addTodoOpener = (bool) => {
     setAddTodoIsOpen(bool);
   };
 
+  const closeBurger = () => {
+    if (setOpenBurger) setOpenBurger(false);
+  };
+
   return (
-    <Box
-      sx={{
-        display: { mobile: 'none', tablet: 'block' },
-        flexGrow: 1,
-        minWidth: '250px',
-        width: '20%',
-        height: '88vh',
-        backgroundColor: palette.secondary.main,
-        position: 'relative',
-      }}>
+    <>
       <Stack
         direction="column"
         justifyContent="flex-start"
         alignItems="flex-start"
         spacing={2}
-        sx={{ marginTop: '30px' }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-          <IconButton>
-            <HomeIcon fontSize="large" />
-          </IconButton>
-          <Typography variant="h5" sx={{ color: palette.AssistanceColor.main }}>
-            Home
-          </Typography>
-        </Link>
-        <Link
-          to="/favoritetodos"
-          style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-          <IconButton>
-            <StarIcon fontSize="large" />
-          </IconButton>
-          <Typography variant="h5" sx={{ color: palette.AssistanceColor.main }}>
-            favorite
-          </Typography>
-        </Link>
-        <Link
-          to="/deletedtodos"
-          style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-          <IconButton>
-            <DeleteIcon fontSize="large" />
-          </IconButton>
-          <Typography variant="h5" sx={{ color: palette.AssistanceColor.main }}>
-            deleted
-          </Typography>
-        </Link>
+        sx={{ marginTop: '20px' }}>
+        {navigation.map((item, i) => {
+          const to = item.name === 'Home' ? '/' : item.name.toLowerCase() + 'todos';
+          return (
+            <Link
+              key={i * Math.random()}
+              to={to}
+              onClick={closeBurger}
+              style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+              <IconButton>{item.icon}</IconButton>
+              <Typography variant="h5" sx={{ color: palette.AssistanceColor.main }}>
+                {item.name}
+              </Typography>
+            </Link>
+          );
+        })}
       </Stack>
       <IconButton
         onClick={() => saveCurrentMode(mode === 'light' ? 'dark' : 'light')}
@@ -81,6 +91,6 @@ export const Sidebar = () => {
         <AddTodo />
       </Button>
       {addTodoIsOpen && <AddTodoSheet addTodoOpener={addTodoOpener} />}
-    </Box>
+    </>
   );
 };

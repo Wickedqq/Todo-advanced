@@ -43,9 +43,11 @@ export const PasswordUpdateComponent = ({ setEditPassword }) => {
 
   return (
     <ClickAwayListener onClickAway={() => setEditPassword(false)}>
-      <Card sx={{ width: 300, marginTop: '20px', borderRadius: '10px' }}>
-        <CardContent>
+      <Card sx={{ width: '90%', marginTop: '20px', borderRadius: '10px' }}>
+        <CardContent sx={{ padding: '2px' }}>
           <TextField
+            size="small"
+            fullWidth
             sx={{ marginBottom: '10px' }}
             variant="outlined"
             value={newPassword}

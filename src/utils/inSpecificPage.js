@@ -5,6 +5,7 @@ export const useInSpecificPage = () => {
   const [currentLocation, setCurrentLocation] = useState({
     inUserPage: null,
     inAuthPage: null,
+    currentPage: '',
   });
   const { pathname } = useLocation();
 
@@ -13,6 +14,7 @@ export const useInSpecificPage = () => {
     setCurrentLocation((prev) => ({ ...prev, inAuthPage: inAuth }));
     const inUser = pathname === '/me';
     setCurrentLocation((prev) => ({ ...prev, inUserPage: inUser }));
+    setCurrentLocation((prev) => ({ ...prev, currentPage: pathname }));
   }, [pathname]);
 
   return currentLocation;

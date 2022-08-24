@@ -42,7 +42,7 @@ export const UserPage = () => {
           display: 'grid',
           gridTemplateRows: 'repeat(10, 1fr)',
           gridRow: '1/-1',
-          gridColumn: '3/-1',
+          gridColumn: { mobile: '1/-1', tablet: '3/-1' },
           gap: 2,
         }}>
         <Box
@@ -55,13 +55,14 @@ export const UserPage = () => {
             direction="row"
             justifyContent="center"
             alignItems="center"
-            spacing={5}
+            spacing={3}
             sx={{ height: '100%', color: palette.AssistanceColor.main }}>
             {filters.map(({ name, ref }) => (
               <StyledButton
+                key={ref + Math.random()}
                 sx={{ backgroundColor: selectedFilter === ref && palette.primary.main }}
                 onClick={() => setSelectedFilter(ref)}>
-                <Typography variant="h5">{name}</Typography>
+                <Typography variant="h6">{name}</Typography>
               </StyledButton>
             ))}
           </Stack>
@@ -72,7 +73,7 @@ export const UserPage = () => {
             gridRow: '3/-1',
             overflowY: 'auto',
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, auto))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, auto))',
             gridAutoRows: '230px',
             gap: 3,
           }}>

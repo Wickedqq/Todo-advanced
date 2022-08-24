@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
-import { Container, Box, CssBaseline } from '@mui/material';
+import { Container, Box, CssBaseline, useTheme } from '@mui/material';
 import {
   // pages
   HomePage,
@@ -21,6 +21,7 @@ import { useEffect } from 'react';
 
 function App() {
   const { authUser } = useAuth();
+  const { palette } = useTheme();
   const { inAuthPage, inUserPage } = useInSpecificPage();
   const dispatch = useDispatch();
 
@@ -35,7 +36,20 @@ function App() {
         sx={{
           display: 'flex',
         }}>
-        {!inAuthPage && !inUserPage && <Sidebar />}
+        {!inAuthPage && !inUserPage && (
+          <Box
+            sx={{
+              display: { mobile: 'none', tablet: 'block' },
+              flexGrow: 1,
+              minWidth: '250px',
+              width: { mobile: '100vw', tablet: '20%' },
+              height: { mobile: '250px', tablet: '88vh' },
+              backgroundColor: palette.secondary.main,
+              position: 'relative',
+            }}>
+            <Sidebar />
+          </Box>
+        )}
         <PageWrapper>
           <Routes>
             <Route path="/" element={<HomePage />} />

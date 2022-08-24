@@ -51,6 +51,7 @@ export const changeTheme = (mode) => ({
   breakpoints: {
     values: {
       mobile: 0,
+      preTablet: 400,
       tablet: 640,
       wideTablet: 840,
       laptop: 1024,

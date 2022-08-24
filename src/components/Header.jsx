@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useState, useEffect } from 'react';
 import {
   Box,
   AppBar,
@@ -15,8 +15,16 @@ import { SearchContext } from '../utils/contexts/searchContext';
 import { useAuth } from '../utils/contexts/authContext';
 import { clearAllTodos } from '../redux/slices/todoSlice';
 import { useDispatch } from 'react-redux';
+import { Sidebar } from './Sidebar';
+import { useWindowWidth } from '../utils/useWindowWidth';
+import { useInSpecificPage } from '../utils/inSpecificPage';
+import { UserShowDown, SearchShowDown } from '../utils/exporter';
 
 export const Header = () => {
+  const windowWidth = useWindowWidth();
+  const [openBurger, setOpenBurger] = useState(false);
+  const [openSearch, setOpenSearch] = useState(false);
+  const { inUserPage } = useInSpecificPage();
   const { authUser, logout } = useAuth();
   const { setSearchValue } = useContext(SearchContext);
   const searchRef = useRef(null);
@@ -34,11 +42,19 @@ export const Header = () => {
     }
   };
 
+  useEffect(() => {
+    if (windowWidth > 640) {
+      setOpenBurger(false);
+      setOpenSearch(false);
+    }
+  }, [windowWidth]);
+
   return (
     <AppBar
       position="sticky"
       sx={{
         height: '12vh',
+        minHeight: '80px',
         zIndex: 9,
       }}>
       <Toolbar
@@ -67,16 +83,32 @@ export const Header = () => {
                 />
               </Link>
             </IconButton>
-            <IconButton color="inherit" aria-label="menu">
+            <IconButton
+              onClick={() => {
+                setOpenSearch(false);
+                setOpenBurger((value) => !value);
+              }}
+              sx={{
+                display: { mobile: 'block', tablet: 'none' },
+              }}
+              color="inherit"
+              aria-label="menu">
               <MenuIcon
                 sx={{
-                  display: { mobile: 'block', tablet: 'none' },
                   color: palette.AssistanceColor.main,
                   fontSize: 35,
                 }}
               />
             </IconButton>
-            <IconButton onClick={() => searchRef.current.focus()} color="inherit">
+            <IconButton
+              onClick={() => {
+                searchRef.current.focus();
+                if (windowWidth < 640) {
+                  setOpenBurger(false);
+                  setOpenSearch((value) => !value);
+                }
+              }}
+              color="inherit">
               <SearchIcon sx={{ color: palette.AssistanceColor.main, fontSize: 30 }} />
             </IconButton>
             <TextField
@@ -95,7 +127,8 @@ export const Header = () => {
         <Box
           sx={{
             display: 'flex',
-            gap: 1,
+            flexDirection: { mobile: 'column', tablet: 'row' },
+            gap: { mobile: 0, tablet: 1 },
             fontSize: '25px',
             alignItems: 'center',
           }}>
@@ -143,6 +176,23 @@ export const Header = () => {
           )}
         </Box>
       </Toolbar>
+      {openBurger && (
+        <Box
+          sx={{
+            width: '100vw',
+            height: '400px',
+            backgroundColor: palette.secondary.main,
+            position: 'absolute',
+            top: '80px',
+          }}>
+          {inUserPage ? (
+            <UserShowDown authUser={authUser} />
+          ) : (
+            <Sidebar setOpenBurger={setOpenBurger} />
+          )}
+        </Box>
+      )}
+      {openSearch && <SearchShowDown />}
     </AppBar>
   );
 };
