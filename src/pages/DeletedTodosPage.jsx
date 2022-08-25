@@ -1,20 +1,21 @@
 import React, { useContext } from 'react';
-import { Button, Typography, useTheme } from '@mui/material';
+import { Box, Button, Typography, useTheme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Todo } from '../utils/exporter';
+import { SkeletonLoader, Todo } from '../utils/exporter';
 import { SearchContext } from '../utils/contexts/searchContext';
 import { deleteAll } from '../redux/slices/todoSlice';
 import { deleteTodos } from '../redux/asyncActions';
 import { useAuth } from '../utils/contexts/authContext';
 
 export const DeletedTodosPage = () => {
-  const { deletedTodos } = useSelector((state) => state.todoReducer);
+  const { deletedTodos, loading } = useSelector((state) => state.todoReducer);
   const { palette } = useTheme();
   const { searchValue } = useContext(SearchContext);
   const dispatch = useDispatch();
-
   const { authUser } = useAuth();
+
+  const runArray = Array(10).fill(null);
 
   const removeDeletedTodos = () => {
     if (window.confirm('are you sure you want to remove all deleted todos?')) {
@@ -34,23 +35,36 @@ export const DeletedTodosPage = () => {
 
   return (
     <>
-      {deletedTodos &&
-        deletedTodos.map((item, i) => {
-          return (
-            item.task.includes(searchValue) && (
-              <Todo
-                key={i * (Math.random() * 100)}
-                id={item.id}
-                docId={item.docId}
-                task={item.task}
-                important={item.important}
-                favorite={item.favorite}
-                isDeleted={item.isDeleted}
-              />
-            )
-          );
-        })}
-      {!deletedTodos.length && (
+      {!loading
+        ? deletedTodos &&
+          deletedTodos.map((item, i) => {
+            return (
+              item.task.includes(searchValue) && (
+                <Todo
+                  key={i * (Math.random() * 100)}
+                  id={item.id}
+                  docId={item.docId}
+                  task={item.task}
+                  important={item.important}
+                  favorite={item.favorite}
+                  isDeleted={item.isDeleted}
+                />
+              )
+            );
+          })
+        : runArray.map((item) => {
+            return (
+              <Box
+                key={Math.random()}
+                sx={{
+                  width: '280px',
+                  height: '180px',
+                }}>
+                <SkeletonLoader />
+              </Box>
+            );
+          })}
+      {!loading && !deletedTodos.length && (
         <Typography
           variant="h5"
           sx={{

@@ -21,13 +21,15 @@ import { useInSpecificPage } from '../utils/inSpecificPage';
 import { UserShowDown, SearchShowDown } from '../utils/exporter';
 
 export const Header = () => {
-  const windowWidth = useWindowWidth();
   const [openBurger, setOpenBurger] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
-  const { inUserPage } = useInSpecificPage();
-  const { authUser, logout } = useAuth();
+
   const { setSearchValue } = useContext(SearchContext);
   const searchRef = useRef(null);
+
+  const { authUser, logout } = useAuth();
+  const windowWidth = useWindowWidth();
+  const { inUserPage } = useInSpecificPage();
   const { palette } = useTheme();
   const dispatch = useDispatch();
 
@@ -35,6 +37,7 @@ export const Header = () => {
     try {
       if (window.confirm('Are you sure that you want to logout?')) {
         dispatch(clearAllTodos());
+        window.localStorage.removeItem('userAvatar');
         await logout();
       }
     } catch (err) {

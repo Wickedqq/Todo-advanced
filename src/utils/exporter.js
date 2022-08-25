@@ -18,6 +18,8 @@ import { PasswordUpdateComponent } from '../components/PasswordUpdate-component'
 import { UserSidebar } from '../components/UserSidebar';
 import { UserShowDown } from '../components/UserShowDown';
 import { SearchShowDown } from '../components/SearchShowDown';
+import { SkeletonLoader } from '../components/SkeletonLoader';
+import { SkeletonLoaderSmall } from '../components/SkeletonLoaderSmall';
 
 // page exports
 export { HomePage, LoginPage, RegisterPage, FavoriteTodosPage, DeletedTodosPage, UserPage };
@@ -37,4 +39,6 @@ export {
   UserSidebar,
   UserShowDown,
   SearchShowDown,
+  SkeletonLoader,
+  SkeletonLoaderSmall,
 };

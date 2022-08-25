@@ -30,11 +30,11 @@ export const AddTodoSheet = ({ addTodoOpener }) => {
     favorite: false,
   });
   const [isValid, setIsValid] = useState(true);
-  const { authUser } = useAuth();
 
-  const dispatch = useDispatch();
   const { mode } = useContext(ThemeContext);
+  const { authUser } = useAuth();
   const { palette } = useTheme();
+  const dispatch = useDispatch();
 
   const changeTodoData = (event) => {
     const { name, value, checked } = event.target;

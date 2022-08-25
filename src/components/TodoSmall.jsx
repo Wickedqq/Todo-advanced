@@ -63,7 +63,7 @@ export const TodoSmall = ({ wholeTodo }) => {
               </Button>
             </Box>
           ) : (
-            <Typography sx={{ fontSize: '12px', color: 'grey' }}>
+            <Typography sx={{ marginLeft: '10px', fontSize: '12px', color: 'grey' }}>
               {comments.length > 0 ? comments : 'click to add a comment'}
             </Typography>
           )}

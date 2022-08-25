@@ -17,7 +17,9 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 export const UserSidebar = ({ authUser }) => {
-  const [displayImage, setDisplayImage] = useState();
+  const [displayImage, setDisplayImage] = useState(
+    window.localStorage.getItem('userAvatar') || null,
+  );
   const [imageLoading, setImageLoading] = useState(false);
   const [editUsername, setEditUsername] = useState(false);
   const [editEmail, setEditEmail] = useState(false);
@@ -25,11 +27,15 @@ export const UserSidebar = ({ authUser }) => {
   const [verify, setVerify] = useState(false);
 
   const imgRef = useRef(null);
-  const { palette } = useTheme();
   const { setAvatar, verifyEmail } = useAuth();
+  const { palette } = useTheme();
 
   useEffect(() => {
-    authUser && setDisplayImage(authUser.photoURL);
+    if (authUser) {
+      window.localStorage.setItem('userAvatar', authUser.photoURL);
+    } else {
+      setDisplayImage(null);
+    }
   }, [authUser]);
 
   const avatarSetter = async (event) => {
@@ -38,7 +44,10 @@ export const UserSidebar = ({ authUser }) => {
     setImageLoading(true);
     const selectedImage = await uploadInStorage(image, authUser.uid);
     setAvatar(selectedImage)
-      .then(() => setDisplayImage(selectedImage))
+      .then(() => {
+        setDisplayImage(selectedImage);
+        window.localStorage.setItem('userAvatar', selectedImage);
+      })
       .catch((err) => console.warn(err))
       .finally(setImageLoading(false));
   };
@@ -48,28 +57,12 @@ export const UserSidebar = ({ authUser }) => {
       setVerify(true);
       setTimeout(() => {
         setVerify(false);
-      }, 2500);
+      }, 2200);
       return;
     }
-    verifyEmail().catch((err) => console.warn(err));
-    setVerify((prev) => !prev);
-  };
-
-  const switchOpenEditingWindow = (event) => {
-    const { id } = event.target;
-    if (id === 'usernameEditer') {
-      setEditUsername((prevValue) => !prevValue);
-      setEditEmail(false);
-      setEditPassword(false);
-    } else if (id === 'emailEditer') {
-      setEditEmail((prevValue) => !prevValue);
-      setEditUsername(false);
-      setEditPassword(false);
-    } else {
-      setEditPassword((prevValue) => !prevValue);
-      setEditEmail(false);
-      setEditUsername(false);
-    }
+    verifyEmail()
+      .then(() => setVerify((prev) => !prev))
+      .catch((err) => console.warn(err));
   };
 
   return (
@@ -122,14 +115,25 @@ export const UserSidebar = ({ authUser }) => {
       <input type="file" ref={imgRef} hidden onChange={avatarSetter} />
       <Box sx={{ gridRow: '4/5', marginLeft: '10px' }}>
         <Typography variant="h5">user: {authUser.displayName}</Typography>
-        <StyledButton id="usernameEditer" name="username" onClick={switchOpenEditingWindow}>
+        <StyledButton
+          name="username"
+          onClick={() => {
+            setEditUsername((prevValue) => !prevValue);
+            setEditEmail(false);
+            setEditPassword(false);
+          }}>
           Change your username
         </StyledButton>
         {editUsername && <UsernameUpdateComponent setEditUsername={setEditUsername} />}
       </Box>
       <Box sx={{ gridRow: '5/6', marginLeft: '10px' }}>
         <Typography variant="h5">email: {authUser.email}</Typography>
-        <StyledButton id="emailEditer" onClick={switchOpenEditingWindow}>
+        <StyledButton
+          onClick={() => {
+            setEditEmail((prevValue) => !prevValue);
+            setEditUsername(false);
+            setEditPassword(false);
+          }}>
           Change your email address
         </StyledButton>
         {editEmail && <EmailUpdateComponent setEditEmail={setEditEmail} />}
@@ -138,9 +142,7 @@ export const UserSidebar = ({ authUser }) => {
         <Typography variant="h5">
           email is verified: {authUser.emailVerified ? 'yes' : 'no'}
         </Typography>
-        <StyledButton id="emailVerifier" onClick={verifyEmailFunction}>
-          verify your email
-        </StyledButton>
+        <StyledButton onClick={verifyEmailFunction}>verify your email</StyledButton>
         {verify && (
           <Typography>
             {authUser.emailVerified
@@ -150,7 +152,12 @@ export const UserSidebar = ({ authUser }) => {
         )}
       </Box>
       <Box sx={{ gridRow: '7/8', marginLeft: '10px' }}>
-        <StyledButton id="passwordEditer" onClick={switchOpenEditingWindow}>
+        <StyledButton
+          onClick={() => {
+            setEditPassword((prevValue) => !prevValue);
+            setEditEmail(false);
+            setEditUsername(false);
+          }}>
           change your password
         </StyledButton>
         {editPassword && <PasswordUpdateComponent setEditPassword={setEditPassword} />}

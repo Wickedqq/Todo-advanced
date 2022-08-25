@@ -83,13 +83,9 @@ const todoSlice = createSlice({
       state.todos = [...state.todos, action.payload];
     },
     [deleteTodos.fulfilled]: (state, action) => {
-      state.loading = false;
       state.deletedTodos = state.deletedTodos.filter(
         (item) => !action.payload.find((docId) => docId === item.docId),
       );
-    },
-    [deleteTodos.rejected]: (state) => {
-      state.loading = false;
     },
   },
 });
