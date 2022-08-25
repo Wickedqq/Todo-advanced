@@ -97,7 +97,7 @@ export const AddTodoSheet = ({ addTodoOpener }) => {
         position: 'fixed',
         top: '20vh',
         left: '20vw',
-        width: '50vw',
+        width: '70vw',
         height: '350px',
         backgroundColor: [mode === 'light' ? 'white' : 'black'],
         zIndex: 10,
